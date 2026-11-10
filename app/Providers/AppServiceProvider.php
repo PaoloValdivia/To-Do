@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+    if (str_contains(config('app.url'), 'app.github.dev')) {
+        \Illuminate\Support\Facades\URL::forceRootUrl(config('app.url'));
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+    }
     }
 }

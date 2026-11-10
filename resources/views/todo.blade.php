@@ -4,15 +4,29 @@
 <body>
     <h1>Mis tareas</h1>
 
-    <form method="POST" action="/todo">
+    @if (session('ok')) <p>{{ session('ok') }}</p> @endif
+    @error('title') <p style="color:red">{{ $message }}</p> @enderror
+
+    <form method="POST" action="{{ route('todo.store') }}">
         @csrf
-        <input type="text" name="title">
+        <input type="text" name="title" required maxlength="255">
         <button>Agregar</button>
     </form>
 
     @foreach ($tasks as $task)
-        <p>{!! $task->title !!}
-           <a href="/todo/{{ $task->id }}/delete">X</a></p>
+        <div>
+            <form method="POST" action="{{ route('todo.toggle', $task->id) }}" style="display:inline">
+                @csrf @method('PATCH')
+                <button>{{ $task->done ? '✔' : '○' }}</button>
+            </form>
+
+            <span>{{ $task->title }}</span>
+
+            <form method="POST" action="{{ route('todo.destroy', $task->id) }}" style="display:inline">
+                @csrf @method('DELETE')
+                <button>Eliminar</button>
+            </form>
+        </div>
     @endforeach
 </body>
 </html>
